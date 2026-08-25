@@ -109,6 +109,13 @@ export async function handleContact(request, env) {
     return json({ ok: false, error: 'Unknown form.' }, 400);
   }
 
+  if (!env.TURNSTILE_SECRET_KEY) {
+    // The fallback below accepts any token, so spam protection is effectively
+    // off. Fine locally, never fine in production -- make it visible in the log
+    // rather than failing open in silence.
+    console.warn('TURNSTILE_SECRET_KEY is not set; falling back to the always-passes test secret.');
+  }
+
   const turnstile = await verifyTurnstile(
     (form.get('cf-turnstile-response') || '').toString(),
     request.headers.get('CF-Connecting-IP'),

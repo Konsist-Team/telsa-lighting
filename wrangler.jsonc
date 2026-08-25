@@ -1,7 +1,28 @@
 {
-    "name": "telsalighting",
+    // Cloudflare Worker with static assets, deployed by Workers Builds
+    // (`npx wrangler deploy`) from the connected GitHub repo.
+    //
+    // "name" must match the Worker the CI system deploys to, otherwise wrangler
+    // warns and overrides it.
+    "name": "telsa-lighting",
+    "main": "src/index.js",
     "compatibility_date": "2026-08-17",
     "assets": {
-        "directory": "./"
+        "directory": "./",
+        // Lets the Worker serve static files itself via env.ASSETS.fetch().
+        "binding": "ASSETS",
+        // Unknown paths render the existing 404 page rather than a bare error.
+        "not_found_handling": "404-page",
+        // Only the form endpoint reaches the Worker; every other request is
+        // served straight from the asset store.
+        "run_worker_first": ["/api/*"]
+    },
+    // Non-secret config. The two secrets (RESEND_API_KEY, TURNSTILE_SECRET_KEY)
+    // are set on the Worker itself and never live in the repo.
+    "vars": {
+        "CONTACT_TO": "sales@telsalighting.com"
+    },
+    "observability": {
+        "enabled": true
     }
 }

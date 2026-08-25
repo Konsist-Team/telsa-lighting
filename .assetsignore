@@ -1,0 +1,14 @@
+# Files here are NOT uploaded to the public asset store.
+# Without this, `wrangler deploy` publishes the entire repo directory —
+# including .git, which makes the full commit history downloadable.
+.git
+.github
+.wrangler
+.assetsignore
+.gitignore
+.dev.vars
+node_modules
+src
+wrangler.jsonc
+FORMS.md
+.DS_Store

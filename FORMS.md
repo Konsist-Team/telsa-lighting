@@ -50,6 +50,11 @@ protection is effectively off until you swap them.
 
 ## Environment variables
 
+> **Plain-text vars belong in `wrangler.jsonc`, not the dashboard.** Each deploy
+> replaces the Worker's entire `vars` set with what the config file declares, so
+> a variable added by hand in the dashboard silently disappears on the next
+> deploy. Secrets are stored separately and survive deploys.
+
 Set these in the Cloudflare dashboard under **Workers & Pages → telsa-lighting
 → Settings → Variables and Secrets**.
 
@@ -58,7 +63,7 @@ Set these in the Cloudflare dashboard under **Workers & Pages → telsa-lighting
 | `RESEND_API_KEY` | Secret | Resend API key, **Sending access**, restricted to `telsalighting.com` |
 | `TURNSTILE_SECRET_KEY` | Secret | Turnstile secret key |
 | `CONTACT_TO` | Plaintext | `sales@telsalighting.com` — set in `wrangler.jsonc` under `vars`, not the dashboard |
-| `CONTACT_FROM` | Plaintext | `Telsa Lighting Website <forms@telsalighting.com>` |
+| `CONTACT_FROM` | Plaintext | `Telsa Lighting Website <forms@telsalighting.com>` — set in `wrangler.jsonc` under `vars`, not the dashboard |
 
 `CONTACT_TO` and `CONTACT_FROM` have defaults in the handler, so only the two
 secrets are strictly required — but leaving `CONTACT_FROM` unset means mail goes

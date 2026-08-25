@@ -17,10 +17,14 @@
         // served straight from the asset store.
         "run_worker_first": ["/api/*"]
     },
-    // Non-secret config. The two secrets (RESEND_API_KEY, TURNSTILE_SECRET_KEY)
-    // are set on the Worker itself and never live in the repo.
+    // Non-secret config, and the single source of truth for it: every deploy
+    // REPLACES the Worker's plain-text vars with exactly this set, so a value
+    // added by hand in the dashboard is wiped by the next deploy. Add vars
+    // here, not there. (Secrets are stored separately and are not affected.)
     "vars": {
-        "CONTACT_TO": "sales@telsalighting.com"
+        "CONTACT_TO": "sales@telsalighting.com",
+        // Must be on a domain verified in Resend.
+        "CONTACT_FROM": "Telsa Lighting Website <forms@telsalighting.com>"
     },
     "observability": {
         "enabled": true

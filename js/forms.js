@@ -1,17 +1,26 @@
 /**
- * Submits the contact and lead-generation forms to /api/contact.
+ * Form submission for the contact, lead-generation and newsletter forms.
  *
- * The Webflow export still ships webflow's own form handler, which posts to
- * webflow.com and only works on Webflow hosting. That handler is bound as a
- * delegated listener on `document`, so stopping propagation here on the form
- * itself keeps it from ever running.
+ * The Webflow export ships webflow's own form handler, which posts to
+ * webflow.com and only works on Webflow hosting. It is bound as a delegated
+ * listener on `document`, so stopping propagation here on the form itself keeps
+ * it from ever running.
+ *
+ * Two endpoints, two response shapes:
+ *   /api/contact                    same-origin Worker  -> { ok, error }
+ *   konsist-api …/newsletter/subscribe  cross-origin    -> { success, message }
+ * Both are normalised below so the forms behave identically.
  */
 (function () {
   'use strict';
 
-  var ENDPOINT = '/api/contact';
+  var CONTACT_ENDPOINT = '/api/contact';
 
-  document.querySelectorAll('form[data-form="contact"], form[data-form="lead"]').forEach(function (form) {
+  var forms = document.querySelectorAll(
+    'form[data-form="contact"], form[data-form="lead"], form[data-form="subscription"]'
+  );
+
+  Array.prototype.forEach.call(forms, function (form) {
     form.addEventListener('submit', function (event) {
       event.preventDefault();
       event.stopPropagation();
@@ -20,6 +29,12 @@
   });
 
   function submit(form) {
+    var kind = form.dataset.form;
+    var isSubscription = kind === 'subscription';
+    // Newsletter forms carry their own absolute action; the site's own forms
+    // post back to this origin.
+    var endpoint = form.getAttribute('action') || CONTACT_ENDPOINT;
+
     var container = form.closest('.w-form') || form.parentNode;
     var doneBlock = container.querySelector('.w-form-done');
     var failBlock = container.querySelector('.w-form-fail');
@@ -32,25 +47,34 @@
     }
     hide(failBlock);
 
-    // data-form is an attribute, so FormData does not pick it up. The handler
-    // needs it to choose the required-field set and the subject line.
     var data = new FormData(form);
-    data.append('form', form.dataset.form);
+    // data-form is an attribute, so FormData does not pick it up. The contact
+    // Worker needs it to choose the required-field set and subject line.
+    if (!isSubscription) data.append('form', kind);
 
-    fetch(ENDPOINT, { method: 'POST', body: data })
+    fetch(endpoint, { method: 'POST', body: data })
       .then(function (response) {
         return response.json().catch(function () {
-          return { ok: false };
+          return {};
         });
       })
       .then(function (result) {
-        if (result.ok) {
+        // { ok, error } from the contact Worker, { success, message } from the
+        // newsletter endpoint.
+        var succeeded = result.ok === true || result.success === true;
+        var message = result.error || result.message;
+
+        if (succeeded) {
           form.reset();
           form.style.display = 'none';
           hide(failBlock);
+          if (isSubscription) {
+            setText(doneBlock, 'Got it! Keep an eye out for our emails.');
+            remember();
+          }
           show(doneBlock);
         } else {
-          fail(failBlock, result.error);
+          fail(failBlock, message);
         }
       })
       .catch(function () {
@@ -62,17 +86,28 @@
           button.value = idleLabel;
         }
         // Turnstile tokens are single use, so a retry needs a fresh one.
-        if (window.turnstile) {
-          window.turnstile.reset(form.querySelector('.cf-turnstile'));
-        }
+        var widget = form.querySelector('.cf-turnstile');
+        if (widget && window.turnstile) window.turnstile.reset(widget);
       });
   }
 
+  function remember() {
+    // Preserved from the markup this replaces. Wrapped because Safari's private
+    // mode throws on write.
+    try {
+      localStorage.subscribed = 'true';
+    } catch (e) {}
+  }
+
   function fail(failBlock, message) {
-    if (!failBlock) return;
-    var target = failBlock.querySelector('div') || failBlock;
-    if (message) target.textContent = message;
+    setText(failBlock, message);
     show(failBlock);
+  }
+
+  function setText(block, message) {
+    if (!block || !message) return;
+    var target = block.querySelector('div') || block;
+    target.textContent = message;
   }
 
   function show(el) {

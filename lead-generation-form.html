@@ -147,7 +147,10 @@ color: #ffd769;
           </div>
           <div class="navmenu_footer">
             <div class="w-form">
-              <form id="wf-form-Subscription-Form-4" name="wf-form-Subscription-Form-4" data-name="Subscription Form" action="https://server.konsist.co/clients/telsa-lighting/subscribe.php" method="post" data-form="subscription" data-wf-page-id="64d28ba7ccee599d5bcfac49" data-wf-element-id="3888581d-2c5d-c516-9b98-659462d6be65">
+              <form id="wf-form-Subscription-Form-4" name="wf-form-Subscription-Form-4" data-name="Subscription Form" action="https://konsist-api.konsist.workers.dev/newsletter/subscribe" method="post" data-form="subscription">
+                <input type="hidden" name="client" value="tl">
+                <div style="position:absolute;left:-9999px" aria-hidden="true"><label for="website-nav">Website</label><input type="text" name="website" id="website-nav" tabindex="-1" autocomplete="off"></div>
+                <div class="cf-turnstile" data-sitekey="0x4AAAAAAEb4d9Y648VIsVVW" data-appearance="interaction-only"></div>
                 <div class="margin-bottom margin-small">
                   <h6 class="text-color-yellow">Join Our Newsletter</h6>
                 </div>
@@ -342,7 +345,10 @@ color: #ffd769;
               <div class="margin-bottom margin-small">
                 <h6 class="text-color-yellow">Join Our Newsletter</h6>
               </div>
-              <form id="wf-form-Subscription-Form-3" name="wf-form-Subscription-Form-3" data-name="Subscription Form" action="https://server.konsist.co/mailchimp/subscribe.php" method="post" data-form="subscription" data-wf-page-id="64d28ba7ccee599d5bcfac49" data-wf-element-id="a75f3efa-3550-0cd6-b3be-b1b6b59de77a">
+              <form id="wf-form-Subscription-Form-3" name="wf-form-Subscription-Form-3" data-name="Subscription Form" action="https://konsist-api.konsist.workers.dev/newsletter/subscribe" method="post" data-form="subscription">
+                <input type="hidden" name="client" value="tl">
+                <div style="position:absolute;left:-9999px" aria-hidden="true"><label for="website-footer">Website</label><input type="text" name="website" id="website-footer" tabindex="-1" autocomplete="off"></div>
+                <div class="cf-turnstile" data-sitekey="0x4AAAAAAEb4d9Y648VIsVVW" data-appearance="interaction-only"></div>
                 <div data-form="subscription" class="form_newsletter large"><input class="form-input_newsletter w-input" maxlength="256" name="email" data-name="email" placeholder="Email Address" type="email" id="email-4" required=""><input type="submit" data-wait="Please wait..." class="button w-button" value="Submit"></div>
               </form>
               <div class="success-message newsletter_footer w-form-done">
@@ -386,76 +392,6 @@ $('body').css('overflow', 'hidden');
   $(this).data("clicks", !clicks);
 });
 });
-</script>
-  <script>
-	makeWebflowFormAjax = function( forms, successCallback, errorCallback ) {
-      forms.each(function(){
-        var form = $(this);
-        form.on("submit", function(){
-          var container =   form.parent();
-          var doneBlock  =  $(".w-form-done", container);
-          var failBlock  =  $(".w-form-fail", container);
-          var action =    form.attr("action");
-          var method =    form.attr("method");
-          var data =      form.serialize() + '&form=' + form.data('form');
-          if (form.data('form') == 'subscription') {
-          	method = 'post';
-            data = new FormData(this);
-            data.append('client', 'tl');
-          }
-          // call via ajax
-          $.ajax({
-            type: method,
-            url: action,
-            data: data,
-            processData: false,
-            contentType: false,
-            success: function (resultData) {
-              if (typeof successCallback === 'function') {
-                // call custom callback
-                result = successCallback(resultData, container);
-                if ( ! result ) {
-                  // show error (fail) block
-                  form.show();
-                  doneBlock.hide();
-                  failBlock.show();
-                  return;
-                }
-              }
-              // show success (done) block
-              form.hide();
-              doneBlock.show();
-              failBlock.hide();
-            },
-            error: function (e) {
-              // call custom callback
-              if (typeof errorCallback === 'function') {
-                errorCallback(e)
-              }
-              // show error (fail) block
-              form.show();
-              doneBlock.hide();
-              failBlock.show();
-            }
-          });
-          // prevent default webdlow action
-          return false;
-        });
-      });
-    }
-    makeWebflowFormAjax($("form[data-form='subscription']"), function(data, parent) {
-      var resultObj = $.parseJSON(data);
-      if(resultObj.success) {
-        //$form[0].reset();
-        parent.find('.w-form-done > div').text('Got it! Keep an eye out for our emails.');
-        localStorage.subscribed ='true';
-        return true;
-      }
-      else {
-        parent.find('.w-form-fail > div').text(resultObj.message);
-        return false;
-      }
-    });
 </script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
   <script>

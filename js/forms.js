@@ -66,14 +66,22 @@
 
         if (succeeded) {
           form.reset();
-          form.style.display = 'none';
           hide(failBlock);
           if (isSubscription) {
             setText(doneBlock, 'Got it! Keep an eye out for our emails.');
             remember();
           }
           show(doneBlock);
+          // The form -- and the submit button holding focus -- is about to be
+          // removed from view. Show the confirmation and move focus into it
+          // first, otherwise focus drops to the top of the page and a keyboard
+          // or screen reader user loses their place entirely.
+          moveFocusTo(doneBlock);
+          form.style.display = 'none';
         } else {
+          // Focus stays on the submit button, which is still there, so nothing
+          // is lost; the failure block carries role="alert" and announces on
+          // its own.
           fail(failBlock, message);
         }
       })
@@ -96,6 +104,16 @@
     // mode throws on write.
     try {
       localStorage.subscribed = 'true';
+    } catch (e) {}
+  }
+
+  function moveFocusTo(el) {
+    if (!el) return;
+    // Containers are not focusable by default. -1 lets script focus it without
+    // adding it to the tab order.
+    if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '-1');
+    try {
+      el.focus();
     } catch (e) {}
   }
 

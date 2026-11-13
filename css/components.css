@@ -1825,3 +1825,30 @@ textarea.w-select {
   grid-row-gap: 16px;
   grid-column-gap: 16px;
 }
+
+/* Hidden from sight, still read by screen readers. Used for form labels that
+   the compact newsletter layout has no room to show. */
+.u-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Webflow's base CSS clears the focus ring from form controls
+   (.w-input:focus { outline: 0 }), and the site's own .form-input:focus rule
+   does not match .form-input_newsletter -- so nothing at all changed on focus
+   for the newsletter fields. Restore a visible indicator.
+   :focus-visible shows it for keyboard use without ringing on mouse clicks.
+   The offset keeps the ring clear of the gold button, so its adjacent colour
+   is the navy background in both cases. */
+.form-input_newsletter:focus-visible,
+.form_newsletter .w-button:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+}

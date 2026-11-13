@@ -53,19 +53,19 @@
           </div>
           <div class="navmenu_footer">
             <div class="w-form">
-              <form id="wf-form-Subscription-Form-4" name="wf-form-Subscription-Form-4" data-name="Subscription Form" action="https://konsist-api.konsist.workers.dev/newsletter/subscribe" method="post" data-form="subscription">
+              <form id="wf-form-Subscription-Form-4" name="wf-form-Subscription-Form-4" data-name="Subscription Form" action="https://api.konsist.co/newsletter/subscribe" method="post" data-form="subscription">
                 <input type="hidden" name="client" value="tl">
                 <div style="position:absolute;left:-9999px" aria-hidden="true"><label for="website-nav">Website</label><input type="text" name="website" id="website-nav" tabindex="-1" autocomplete="off"></div>
                 <div class="cf-turnstile" data-sitekey="0x4AAAAAAEb4d9Y648VIsVVW"></div>
                 <div class="margin-bottom margin-small">
                   <h6 class="text-color-yellow">Join Our Newsletter</h6>
                 </div>
-                <div class="form_newsletter"><input class="form-input_newsletter w-input" maxlength="256" name="email" data-name="Email" placeholder="Email Address" type="email" id="email" required=""><input type="submit" data-wait="Please wait..." class="button w-button" value="Submit"></div>
+                <div class="form_newsletter"><label for="email" class="u-visually-hidden">Email Address</label><input class="form-input_newsletter w-input" maxlength="256" name="email" data-name="Email" placeholder="Email Address" type="email" id="email" required=""><input type="submit" aria-label="Subscribe to our newsletter" data-wait="Please wait..." class="button w-button" value="Submit"></div>
               </form>
-              <div class="success-message w-form-done">
+              <div class="success-message w-form-done" role="status" aria-live="polite">
                 <div class="text-block">Thank you! Your submission has been received!</div>
               </div>
-              <div class="error-message w-form-fail">
+              <div class="error-message w-form-fail" role="alert" aria-live="assertive">
                 <div>Oops! Something went wrong while submitting the form.</div>
               </div>
             </div>
@@ -408,10 +408,10 @@ color: #ffd769;
                       </label></div>
                   </div><input type="submit" data-wait="Please wait..." id="w-node-a7c4a0cd-9ab3-71e8-a633-d55226f79dd8-5bcfac4a" class="button w-button" value="Submit">
                 </form>
-                <div class="w-form-done">
+                <div class="w-form-done" role="status" aria-live="polite">
                   <div>Thank you! Your submission has been received!</div>
                 </div>
-                <div class="w-form-fail">
+                <div class="w-form-fail" role="alert" aria-live="assertive">
                   <div>Oops! Something went wrong while submitting the form.</div>
                 </div>
               </div>

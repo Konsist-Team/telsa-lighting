@@ -1840,15 +1840,56 @@ textarea.w-select {
   border: 0;
 }
 
-/* Webflow's base CSS clears the focus ring from form controls
-   (.w-input:focus { outline: 0 }), and the site's own .form-input:focus rule
-   does not match .form-input_newsletter -- so nothing at all changed on focus
-   for the newsletter fields. Restore a visible indicator.
-   :focus-visible shows it for keyboard use without ringing on mouse clicks.
-   The offset keeps the ring clear of the gold button, so its adjacent colour
-   is the navy background in both cases. */
-.form-input_newsletter:focus-visible,
-.form_newsletter .w-button:focus-visible {
-  outline: 3px solid #fff;
+/* Webflow's base CSS removes the focus ring from its interactive components
+   -- .w-input, .w-select, .w-button, .w-nav-link, .w-tab-link, the slider
+   arrows and dots, and the dropdown toggle/links all set outline: 0 on :focus.
+   That left keyboard users with no indication of where they were anywhere on
+   the site. Restore one.
+
+   The ring is two-tone because these components sit on both the navy sections
+   and the light ones, and a single colour cannot contrast with both. Navy and
+   white are 14.4:1 apart, so whichever background the ring lands on, one of
+   its two colours stands clear of it. The white sits outside the navy, giving
+   a white / navy / white sandwich that reads on any backdrop.
+
+   :focus-visible keeps this to keyboard and other non-pointer focus, so
+   clicking a button does not leave a ring behind. Neither outline nor
+   box-shadow affects layout, so nothing shifts. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible,
+.w-input:focus-visible,
+.w-select:focus-visible,
+.w-button:focus-visible,
+.w-nav-link:focus-visible,
+.w-nav-button:focus-visible,
+.w-dropdown-toggle:focus-visible,
+.w-dropdown-link:focus-visible,
+.w-tab-link:focus-visible,
+.w-slider-arrow-left:focus-visible,
+.w-slider-arrow-right:focus-visible,
+.w-slider-dot:focus-visible {
+  outline: 3px solid #172a48;
   outline-offset: 2px;
+  box-shadow: 0 0 0 6px #fff;
+}
+
+/* Windows High Contrast / forced colours ignores the colours above, so hand
+   the ring back to the system rather than leaving nothing. */
+@media (forced-colors: active) {
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  .w-input:focus-visible,
+  .w-button:focus-visible,
+  .w-nav-link:focus-visible,
+  .w-tab-link:focus-visible {
+    outline: 3px solid Highlight;
+    box-shadow: none;
+  }
 }
